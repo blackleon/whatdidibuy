@@ -28,13 +28,12 @@ public class pickAnImage extends AppCompatActivity {
 
     public static class Item
     {
-        public String itemtype;
+
         public String price;
         public String buydate;
 
-        public Item(String it, String pr, String dt)
+        public Item(String pr, String dt)
         {
-            itemtype = it;
             price = pr;
             buydate = dt;
         }
@@ -72,7 +71,8 @@ public class pickAnImage extends AppCompatActivity {
             public void onClick(View v) {
                 Random r = new Random();
                 Integer a = r.nextInt();
-                myRef.child("items").child(a.toString()).setValue(new Item("food", valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
+                myRef.child("items").child("food").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
+                valued.setText("");
             }
         });
 
@@ -81,8 +81,8 @@ public class pickAnImage extends AppCompatActivity {
             public void onClick(View v) {
                 Random r = new Random();
                 Integer a = r.nextInt();
-                myRef.child("items").child(a.toString()).setValue(new Item("bill", valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
-
+                myRef.child("items").child("bill").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
+                valued.setText("");
             }
         });
 
@@ -91,8 +91,8 @@ public class pickAnImage extends AppCompatActivity {
             public void onClick(View v) {
                 Random r = new Random();
                 Integer a = r.nextInt();
-                myRef.child("items").child(a.toString()).setValue(new Item("cloth", valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
-
+                myRef.child("items").child("cloth").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
+                valued.setText("");
             }
         });
 
@@ -101,8 +101,8 @@ public class pickAnImage extends AppCompatActivity {
             public void onClick(View v) {
                 Random r = new Random();
                 Integer a = r.nextInt();
-                myRef.child("items").child(a.toString()).setValue(new Item("education", valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
-
+                myRef.child("items").child("education").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
+                valued.setText("");
             }
         });
 
@@ -111,8 +111,8 @@ public class pickAnImage extends AppCompatActivity {
             public void onClick(View v) {
                 Random r = new Random();
                 Integer a = r.nextInt();
-                myRef.child("items").child(a.toString()).setValue(new Item("health", valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
-
+                myRef.child("items").child("health").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
+                valued.setText("");
             }
         });
 
@@ -121,8 +121,8 @@ public class pickAnImage extends AppCompatActivity {
             public void onClick(View v) {
                 Random r = new Random();
                 Integer a = r.nextInt();
-                myRef.child("items").child(a.toString()).setValue(new Item("travel", valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
-
+                myRef.child("items").child("travel").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
+                valued.setText("");
             }
         });
 
