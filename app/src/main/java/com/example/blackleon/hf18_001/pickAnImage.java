@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.google.firebase.database.DatabaseReference;
@@ -20,13 +21,18 @@ import java.util.Random;
 
 public class pickAnImage extends AppCompatActivity {
 
+    public pickAnImage()
+    {
+
+    }
+
     public static class Item
     {
         public String itemtype;
-        public float price;
+        public String price;
         public String buydate;
 
-        public Item(String it, float pr, String dt)
+        public Item(String it, String pr, String dt)
         {
             itemtype = it;
             price = pr;
@@ -37,6 +43,12 @@ public class pickAnImage extends AppCompatActivity {
     // Write a message to the database
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("users");
+
+
+    public String getStringValue(EditText v)
+    {
+        return v.getText().toString();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +63,7 @@ public class pickAnImage extends AppCompatActivity {
         Button education = (Button) findViewById(R.id.btnegitim);
         Button health = (Button) findViewById(R.id.btnsaglik);
         Button travel = (Button) findViewById(R.id.btnulasim);
-
-
+        final EditText valued = (EditText) findViewById(R.id.edittext);
 
 
 
@@ -61,13 +72,16 @@ public class pickAnImage extends AppCompatActivity {
             public void onClick(View v) {
                 Random r = new Random();
                 Integer a = r.nextInt();
-                myRef.child("items").child(a.toString()).setValue(new Item("food", 10, new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
+                myRef.child("items").child(a.toString()).setValue(new Item("food", valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
             }
         });
 
         bill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Random r = new Random();
+                Integer a = r.nextInt();
+                myRef.child("items").child(a.toString()).setValue(new Item("bill", valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
 
             }
         });
@@ -75,6 +89,9 @@ public class pickAnImage extends AppCompatActivity {
         cloth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Random r = new Random();
+                Integer a = r.nextInt();
+                myRef.child("items").child(a.toString()).setValue(new Item("cloth", valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
 
             }
         });
@@ -82,6 +99,9 @@ public class pickAnImage extends AppCompatActivity {
         education.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Random r = new Random();
+                Integer a = r.nextInt();
+                myRef.child("items").child(a.toString()).setValue(new Item("education", valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
 
             }
         });
@@ -89,6 +109,9 @@ public class pickAnImage extends AppCompatActivity {
         health.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Random r = new Random();
+                Integer a = r.nextInt();
+                myRef.child("items").child(a.toString()).setValue(new Item("health", valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
 
             }
         });
@@ -96,6 +119,9 @@ public class pickAnImage extends AppCompatActivity {
         travel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Random r = new Random();
+                Integer a = r.nextInt();
+                myRef.child("items").child(a.toString()).setValue(new Item("travel", valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
 
             }
         });
