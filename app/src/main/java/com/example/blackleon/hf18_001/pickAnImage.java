@@ -3,18 +3,24 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -26,22 +32,48 @@ public class pickAnImage extends AppCompatActivity {
 
     }
 
+    private ArrayList<String> mMeetings = new ArrayList<>();
+
     public static class Item
     {
 
         public String price;
         public String buydate;
+        public String type;
 
-        public Item(String pr, String dt)
+        public Item(String price, String buydate, String type)
         {
-            price = pr;
-            buydate = dt;
+            this.price = price;
+            this.buydate = buydate;
+            this.type = type;
+        }
+
+        public String getPrice() {
+            return price;
+        }
+
+        public void setPrice(String price) {
+            this.price = price;
+        }
+
+        public String getBuydate() {
+            return buydate;
+        }
+
+        public void setBuydate(String buydate) {
+            this.buydate = buydate;
+        }
+
+        public Item()
+        {
+
         }
     }
 
     // Write a message to the database
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("users");
+    DatabaseReference ReadmyRef = database.getReference("users/items");
 
 
     public String getStringValue(EditText v)
@@ -55,14 +87,16 @@ public class pickAnImage extends AppCompatActivity {
         setContentView(R.layout.activity_pick_an_image);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ListView list = (ListView) findViewById(R.id.list_dynamic);
+        final ListView list = (ListView) findViewById(R.id.list_dynamic);
         Button food = (Button) findViewById(R.id.btnyemek);
         Button bill = (Button) findViewById(R.id.btnfatura);
         Button cloth = (Button) findViewById(R.id.btngiyim);
         Button education = (Button) findViewById(R.id.btnegitim);
         Button health = (Button) findViewById(R.id.btnsaglik);
         Button travel = (Button) findViewById(R.id.btnulasim);
+        Button show = (Button) findViewById(R.id.btnshow);
         final EditText valued = (EditText) findViewById(R.id.edittext);
+        //final ArrayAdapter<String> adapter=new ArrayAdapter<String>(list);
 
 
 
@@ -71,7 +105,7 @@ public class pickAnImage extends AppCompatActivity {
             public void onClick(View v) {
                 Random r = new Random();
                 Integer a = r.nextInt();
-                myRef.child("items").child("food").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
+                myRef.child("items").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()),"food"));
                 valued.setText("");
             }
         });
@@ -81,7 +115,7 @@ public class pickAnImage extends AppCompatActivity {
             public void onClick(View v) {
                 Random r = new Random();
                 Integer a = r.nextInt();
-                myRef.child("items").child("bill").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
+                myRef.child("items").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()),"bill"));
                 valued.setText("");
             }
         });
@@ -91,7 +125,7 @@ public class pickAnImage extends AppCompatActivity {
             public void onClick(View v) {
                 Random r = new Random();
                 Integer a = r.nextInt();
-                myRef.child("items").child("cloth").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
+                myRef.child("items").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()),"cloth"));
                 valued.setText("");
             }
         });
@@ -101,7 +135,7 @@ public class pickAnImage extends AppCompatActivity {
             public void onClick(View v) {
                 Random r = new Random();
                 Integer a = r.nextInt();
-                myRef.child("items").child("education").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
+                myRef.child("items").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()),"education"));
                 valued.setText("");
             }
         });
@@ -111,7 +145,7 @@ public class pickAnImage extends AppCompatActivity {
             public void onClick(View v) {
                 Random r = new Random();
                 Integer a = r.nextInt();
-                myRef.child("items").child("health").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
+                myRef.child("items").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()),"health"));
                 valued.setText("");
             }
         });
@@ -121,10 +155,34 @@ public class pickAnImage extends AppCompatActivity {
             public void onClick(View v) {
                 Random r = new Random();
                 Integer a = r.nextInt();
-                myRef.child("items").child("travel").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime())));
+                myRef.child("items").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()), "travel"));
                 valued.setText("");
             }
         });
+       final ArrayList<String> array = new ArrayList<>();
+        show.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReadmyRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            Item it =ds.getValue(Item.class);
+                            array.add(it.price);
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.e("zsd",databaseError.getMessage());
+                    }
+                });
+            }
+        });
+        ArrayAdapter<String> veriAdaptoru=new ArrayAdapter<String>
+                (this, android.R.layout.simple_list_item_1, android.R.id.text1, array);
+        list.setAdapter(veriAdaptoru);
+
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
