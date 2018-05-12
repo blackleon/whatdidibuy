@@ -45,11 +45,15 @@ public class specialAdapter extends BaseAdapter {
         lineView = inflater.inflate(R.layout.layout, null);
         TextView textView = (TextView) lineView.findViewById(R.id.text);
         ImageView imageView = (ImageView) lineView.findViewById(R.id.symbol);
+        //ImageView imageView2 = (ImageView) lineView.findViewById(R.id.symbol4);
 
         pickAnImage.Item item = itemList.get(position);
         textView.setText(item.type + " " + item.price + " " + item.buydate);
 
         //To be continued... if(item.type==)
+
+        imageView.setImageResource(android.R.drawable.star_on);
+
 
         return lineView;
     }

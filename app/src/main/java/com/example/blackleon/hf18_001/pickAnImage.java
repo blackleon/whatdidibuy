@@ -2,6 +2,8 @@ package com.example.blackleon.hf18_001;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.util.DiffUtil;
+import android.support.v7.util.ListUpdateCallback;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -11,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,13 +29,6 @@ import java.util.Date;
 import java.util.Random;
 
 public class pickAnImage extends AppCompatActivity {
-
-    public pickAnImage()
-    {
-
-    }
-
-    private ArrayList<String> mMeetings = new ArrayList<>();
 
     public static class Item
     {
@@ -75,7 +71,6 @@ public class pickAnImage extends AppCompatActivity {
     DatabaseReference myRef = database.getReference("users");
     DatabaseReference ReadmyRef = database.getReference("users/items");
 
-
     public String getStringValue(EditText v)
     {
         return v.getText().toString();
@@ -95,20 +90,27 @@ public class pickAnImage extends AppCompatActivity {
         Button health = (Button) findViewById(R.id.btnsaglik);
         Button travel = (Button) findViewById(R.id.btnulasim);
         Button show = (Button) findViewById(R.id.btnshow);
+
         final EditText valued = (EditText) findViewById(R.id.edittext);
 
         final ArrayList<Item> array = new ArrayList<>();
+        final ArrayList<Item> oldarray = new ArrayList<>();
+
+        final specialAdapter sA = new specialAdapter(this, array);
+        list.setAdapter(sA);
+
         show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                array.clear();
                 ReadmyRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-
+                        array.clear();
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             Item it =ds.getValue(Item.class);
                             array.add(it);
+
+
                         }
                     }
                     @Override
@@ -117,31 +119,59 @@ public class pickAnImage extends AppCompatActivity {
                     }
                 });
 
+                for(int a = 0; a< array.size(); a++)
+                {
+                    for(int b = 0; b<array.size()-1; b++)
+                    {
+                        if(array.get(b).type.equals(array.get(b+1).type)){
+
+
+                        int result = array.get(b).buydate.compareTo(array.get(b+1).buydate);
+                        if(result>0)
+                        {
+                            Item item = new Item();
+                            item = array.get(b+1);
+                            array.set(b+1, array.get(b));
+                            array.set(b, item);
+                        }
+
+                        }
+                    }
+                }
+
+
             }
         });
-        final specialAdapter sA = new specialAdapter(this, array);
-        sA.clearArray();
-        sA.notifyDataSetChanged();
-        Log.e("wtf", Integer.toString(sA.getCount()));
-        list.setAdapter(sA);
+
+
 
         food.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Random r = new Random();
-                Integer a = r.nextInt();
-                myRef.child("items").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()),"food"));
-                valued.setText("");sA.notifyDataSetChanged();array.clear();
+                Integer a = r.nextInt(100000);
+                if(!valued.getText().toString().isEmpty()) {
+                    myRef.child("items").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(Calendar.getInstance().getTime()), "food"));
+                    valued.setText("");
+                    sA.notifyDataSetChanged();
+                    array.clear();
+                }
             }
         });
+
+
 
         bill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Random r = new Random();
-                Integer a = r.nextInt();
-                myRef.child("items").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()),"bill"));
-                valued.setText("");sA.notifyDataSetChanged();array.clear();
+                Integer a = r.nextInt(100000)+100000;
+                if (!valued.getText().toString().isEmpty()) {
+                    myRef.child("items").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(Calendar.getInstance().getTime()), "bill"));
+                    valued.setText("");
+                    sA.notifyDataSetChanged();
+                    array.clear();
+                }
             }
         });
 
@@ -149,9 +179,13 @@ public class pickAnImage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Random r = new Random();
-                Integer a = r.nextInt();
-                myRef.child("items").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()),"cloth"));
-                valued.setText("");sA.notifyDataSetChanged();array.clear();
+                Integer a = r.nextInt(100000)+200000;
+                if(!valued.getText().toString().isEmpty()) {
+                    myRef.child("items").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(Calendar.getInstance().getTime()), "cloth"));
+                    valued.setText("");
+                    sA.notifyDataSetChanged();
+                    array.clear();
+                }
             }
         });
 
@@ -159,9 +193,13 @@ public class pickAnImage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Random r = new Random();
-                Integer a = r.nextInt();
-                myRef.child("items").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()),"education"));
-                valued.setText("");sA.notifyDataSetChanged();array.clear();
+                Integer a = r.nextInt(100000)+300000;
+                if(!valued.getText().toString().isEmpty()) {
+                    myRef.child("items").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(Calendar.getInstance().getTime()), "education"));
+                    valued.setText("");
+                    sA.notifyDataSetChanged();
+                    array.clear();
+                }
             }
         });
 
@@ -169,9 +207,13 @@ public class pickAnImage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Random r = new Random();
-                Integer a = r.nextInt();
-                myRef.child("items").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()),"health"));
-                valued.setText("");sA.notifyDataSetChanged();array.clear();
+                Integer a = r.nextInt(100000)+400000;
+                if(!valued.getText().toString().isEmpty()) {
+                    myRef.child("items").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(Calendar.getInstance().getTime()), "health"));
+                    valued.setText("");
+                    sA.notifyDataSetChanged();
+                    array.clear();
+                }
             }
         });
 
@@ -179,9 +221,13 @@ public class pickAnImage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Random r = new Random();
-                Integer a = r.nextInt();
-                myRef.child("items").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()), "travel"));
-                valued.setText("");sA.notifyDataSetChanged();array.clear();
+                Integer a = r.nextInt(100000)+500000;
+                if(!valued.getText().toString().isEmpty()) {
+                    myRef.child("items").child(a.toString()).setValue(new Item(valued.getText().toString(), new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(Calendar.getInstance().getTime()), "travel"));
+                    valued.setText("");
+                    sA.notifyDataSetChanged();
+                    array.clear();
+                }
             }
         });
     }
